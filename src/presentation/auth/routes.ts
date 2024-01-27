@@ -14,8 +14,8 @@ export class AuthRoutes {
     //definir todas las rutas principales
 
     router.post('/register', controller.registerUser);
-    router.post('/login', AuthMiddleware.validateJWT, controller.loginUser);
-    router.get('/', AuthMiddleware.validateJWT, controller.getUsers);
+    router.post('/login', controller.loginUser);
+    router.get('/', AuthMiddleware.validateRole, controller.getUsers);
 
     return router;
   }

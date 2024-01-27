@@ -29,7 +29,12 @@ export class AuthDatasourceImpl implements AuthDataSource {
 
       if (!isPasswordCorrect) throw CustomError.badRequest('Incorrect password');
 
-      return UserMapper.userEntityFromObject(user);
+      const userEntity = UserMapper.userEntityFromObject(user);
+      if (Array.isArray(userEntity)) {
+        throw CustomError.internalError('Unexpected multiple users found');
+      }
+
+      return userEntity;
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;
@@ -39,7 +44,7 @@ export class AuthDatasourceImpl implements AuthDataSource {
   }
 
   async register(registerUserDto: RegisterUserDto): Promise<UserEntity> {
-    const { name, email, password } = registerUserDto;
+    const { name, email, password, roles } = registerUserDto;
 
     try {
       const exists = await UserModel.findOne({ email });
@@ -49,15 +54,30 @@ export class AuthDatasourceImpl implements AuthDataSource {
         name: name,
         email: email,
         password: this.hashPassword(password),
+        roles: roles,
       });
 
       await user.save();
 
-      return UserMapper.userEntityFromObject(user);
+      const userEntity = UserMapper.userEntityFromObject(user);
+      if (Array.isArray(userEntity)) {
+        throw CustomError.internalError('Unexpected multiple users found');
+      }
+
+      return userEntity;
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;
       }
+      throw CustomError.internalError();
+    }
+  }
+
+  async getAll(): Promise<UserEntity | UserEntity[]> {
+    try {
+      const users = await UserModel.find();
+      return UserMapper.userEntityFromObject(users);
+    } catch (error) {
       throw CustomError.internalError();
     }
   }
