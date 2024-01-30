@@ -1,4 +1,5 @@
 import express, { Router } from 'express';
+import errorHandler from './middlewares/errorHandler.middleware';
 
 interface Options {
   port?: number;
@@ -24,6 +25,8 @@ export class Server {
 
     //usar las rutas definidas
     this.app.use(this.routes);
+
+    this.app.use(errorHandler)
 
     this.app.listen(this.port, () => {
       console.log(`Server running at port ${this.port}`);

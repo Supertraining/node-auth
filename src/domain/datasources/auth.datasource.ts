@@ -10,5 +10,4 @@ export abstract class AuthDataSource {
 
   abstract login(loginUserDto: LoginUserDto): Promise<UserEntity>;
 
-  abstract getAll(): Promise<UserEntity | UserEntity[]>;
 }

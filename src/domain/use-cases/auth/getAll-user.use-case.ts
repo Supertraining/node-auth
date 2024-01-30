@@ -1,5 +1,6 @@
-import { AuthRepository } from '../../repositories/auth.repository';
+
 import { UserEntity } from '../../entities/user.entity';
+import { UserRepository } from '../../repositories/user.repository';
 
 
 interface GetAllUsersUseCase {
@@ -7,9 +8,9 @@ interface GetAllUsersUseCase {
 }
 
 export class GetAllUsers implements GetAllUsersUseCase {
-  constructor(private readonly authRepository: AuthRepository) {}
+  constructor(private readonly userRepository: UserRepository) {}
   async execute(): Promise<UserEntity | UserEntity[]> {
-    const users = this.authRepository.getAll();
+    const users = this.userRepository.getAll();
     return users;
   }
 }

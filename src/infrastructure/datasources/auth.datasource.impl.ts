@@ -73,12 +73,4 @@ export class AuthDatasourceImpl implements AuthDataSource {
     }
   }
 
-  async getAll(): Promise<UserEntity | UserEntity[]> {
-    try {
-      const users = await UserModel.find();
-      return UserMapper.userEntityFromObject(users);
-    } catch (error) {
-      throw CustomError.internalError();
-    }
-  }
 }

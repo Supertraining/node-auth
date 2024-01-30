@@ -5,7 +5,6 @@ import {
   RegisterUserDto,
   RegisterUser,
   LoginUserDto,
-  GetAllUsers,
   LoginUser,
 } from '../../domain';
 
@@ -41,10 +40,5 @@ export class AuthController {
       .catch((error) => this.handleError(error, res));
   };
 
-  getUsers = (req: Request, res: Response) => {
-    new GetAllUsers(this.authRepository)
-      .execute()
-      .then((users) => res.json(users))
-      .catch((error) => this.handleError(error, res));
-  };
+ 
 }

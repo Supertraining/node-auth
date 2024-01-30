@@ -9,6 +9,4 @@ export abstract class AuthRepository {
 
   abstract login(loginUserDto: LoginUserDto): Promise<UserEntity>;
 
-  abstract getAll(): Promise<UserEntity | UserEntity[]>;
-  
 }

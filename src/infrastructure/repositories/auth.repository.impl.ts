@@ -16,8 +16,4 @@ export class AuthRepositoryImpl implements AuthRepository {
     return this.authDatasource.register(registerUserDto);
   }
 
-  getAll(): Promise<UserEntity | UserEntity[]> {
-    return this.authDatasource.getAll();
-  }
-
 }

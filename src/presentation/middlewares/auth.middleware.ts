@@ -6,15 +6,15 @@ import { CustomError } from '../../domain';
 export class AuthMiddleware {
   static validateJWT = async (req: Request, res: Response, next: NextFunction) => {
     const authorization = req.header('Authorization');
-    if (!authorization) return res.status(401).json({ error: 'No token provided' });
+    if (!authorization) throw CustomError.unauthorized('No token provided');
     if (!authorization.startsWith('Bearer '))
-      return res.status(401).json({ error: 'Invalid Bearer token' });
+      throw CustomError.unauthorized('Invalid Bearer token');
 
     const token = authorization.split(' ').at(1) || '';
 
     try {
       const payload = await JwtAdapter.validateToken<{ id: string; roles: Array<string> }>(token);
-      if (!payload) return res.status(401).json({ error: 'Invalid token' });
+      if (!payload)  throw CustomError.unauthorized('Invalid token');
 
       const user = await UserModel.findById(payload.id);
       if (!user) return res.status(401).json({ error: 'Invalid token - user not found' });
@@ -23,8 +23,11 @@ export class AuthMiddleware {
 
       next();
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      if (error instanceof CustomError) {
+        next(error);
+      } else {
+        next(CustomError.internalError());
+      }
     }
   };
 
@@ -39,16 +42,18 @@ export class AuthMiddleware {
     try {
       const payload = await JwtAdapter.validateToken<{ id: string; roles: Array<string> }>(token);
       if (!payload) throw CustomError.unauthorized('Invalid token');
-      const { roles : [role] } = payload;
-      if(role !== 'ADMIN_ROLE') throw CustomError.forbidden('Access denied')
-      
-      next()
+      const {
+        roles: [role],
+      } = payload;
+      if (role !== 'ADMIN_ROLE') throw CustomError.forbidden('Access denied');
 
+      next();
     } catch (error) {
       if (error instanceof CustomError) {
-        throw error;
+        next(error);
+      } else {
+        next(CustomError.internalError());
       }
-      throw CustomError.internalError();
     }
   };
 }
