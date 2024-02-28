@@ -9,11 +9,12 @@ export class userRoutes {
 
     const dataSourse = new UserDatasourceImpl();
 
-    const userRepository = new UserRepositoryImpl(dataSourse)
+    const userRepository = new UserRepositoryImpl(dataSourse);
 
     const controller = new UserController(userRepository);
 
     router.get('/', AuthMiddleware.validateRole, controller.getUsers);
+    router.delete('/:id', AuthMiddleware.validateRole, controller.deleteUserById);
 
     return router;
   }

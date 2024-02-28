@@ -5,16 +5,16 @@ import { CustomError } from '../../domain';
 
 export class AuthMiddleware {
   static validateJWT = async (req: Request, res: Response, next: NextFunction) => {
-    const authorization = req.header('Authorization');
-    if (!authorization) throw CustomError.unauthorized('No token provided');
-    if (!authorization.startsWith('Bearer '))
-      throw CustomError.unauthorized('Invalid Bearer token');
-
-    const token = authorization.split(' ').at(1) || '';
-
     try {
+      const authorization = req.header('Authorization');
+      if (!authorization) throw CustomError.unauthorized('No token provided');
+      if (!authorization.startsWith('Bearer '))
+        throw CustomError.unauthorized('Invalid Bearer token');
+
+      const token = authorization.split(' ').at(1) || '';
+
       const payload = await JwtAdapter.validateToken<{ id: string; roles: Array<string> }>(token);
-      if (!payload)  throw CustomError.unauthorized('Invalid token');
+      if (!payload) throw CustomError.unauthorized('Invalid token');
 
       const user = await UserModel.findById(payload.id);
       if (!user) return res.status(401).json({ error: 'Invalid token - user not found' });
@@ -32,14 +32,14 @@ export class AuthMiddleware {
   };
 
   static validateRole = async (req: Request, res: Response, next: NextFunction) => {
-    const authorization = req.header('Authorization');
-    if (!authorization) throw CustomError.unauthorized('No token provided');
-    if (!authorization.startsWith('Bearer '))
-      throw CustomError.unauthorized('Invalid Bearer token');
-
-    const token = authorization.split(' ').at(1) || '';
-
     try {
+      const authorization = req.header('Authorization');
+      if (!authorization) throw CustomError.unauthorized('No token provided');
+      if (!authorization.startsWith('Bearer '))
+        throw CustomError.unauthorized('Invalid Bearer token');
+
+      const token = authorization.split(' ').at(1) || '';
+
       const payload = await JwtAdapter.validateToken<{ id: string; roles: Array<string> }>(token);
       if (!payload) throw CustomError.unauthorized('Invalid token');
       const {
@@ -49,6 +49,7 @@ export class AuthMiddleware {
 
       next();
     } catch (error) {
+      console.log('ERROR EN AUTH MIDDLE:', error);
       if (error instanceof CustomError) {
         next(error);
       } else {
