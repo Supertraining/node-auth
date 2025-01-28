@@ -29,7 +29,7 @@ export class Server {
 
     this.app.use(ErrorHandler.errorHandler)
 
-    this.app.listen(this.port, () => {
+    this.app.listen(this.port, '0.0.0.0', () => {
       console.log(`Server running at port ${this.port}`);
     });
   }

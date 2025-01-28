@@ -8,5 +8,5 @@ export * from './repositories/auth.repository';
 export * from './repositories/user.repository';
 export * from './use-cases/auth/register-user.use-case';
 export * from './use-cases/auth/login-user.use-case';
-export * from './use-cases/user/getAll-user.use-case'
+export * from './use-cases/user/getAll.user.use-case'
 export * from './use-cases/user/deleteUserById.user.use-case'

@@ -1,5 +1,7 @@
 import { Response, Request } from 'express';
-import { CustomError, GetAllUsers, DeleteUserById, UserRepository } from '../../domain';
+import { CustomError, GetAllUsers, DeleteUserById, UserRepository, UserEntity } from '../../domain';
+import { GetUserById } from '../../domain/use-cases/user/getUserById.user.use-case';
+import { UpdateUser } from '../../domain/use-cases/user/updateUser.user.use-case';
 
 export class UserController {
   constructor(private readonly userRepository: UserRepository) {}
@@ -26,4 +28,22 @@ export class UserController {
       .then((isUserDeleted) => res.json(isUserDeleted))
       .catch((error) => this.handleError(error, res));
   };
+
+  getUserById = (req: Request, res: Response) => {
+    const id: string = req.params.id;
+    new GetUserById(this.userRepository)
+    .execute(id)
+    .then((user) => res.json(user))
+    .catch((error) => this.handleError(error, res));
+  }
+
+  updateUser = (req: Request, res: Response)=> {
+    const id: string = req.params.id;
+    const user: UserEntity = req.body;
+    new UpdateUser(this.userRepository)
+    .execute(id,user)
+    .then((user) => res.json(user))
+    .catch((error) => this.handleError(error, res));
+  }
+
 }

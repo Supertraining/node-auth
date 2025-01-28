@@ -10,7 +10,7 @@ export class RegisterUserDto {
     if (!email) return ['Missing email'];
     if (!Validators.email.test(email)) return ['Email is not valid'];
     if (!password) return ['Missing password'];
-    if (password.length < 6) return ['Password too short'];
+    if (!Validators.password.test(password)) return ['Password too short'];
     //Esta funcion devuelve una tupla [string, RegisterUserDto]. En caso de que sea todo correcto devolvera el string como undefined y la nueva instancia del dto.
 
     return [undefined, new RegisterUserDto(name, email.toLowerCase(), password, roles)];

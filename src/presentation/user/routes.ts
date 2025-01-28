@@ -14,7 +14,9 @@ export class userRoutes {
     const controller = new UserController(userRepository);
 
     router.get('/', AuthMiddleware.validateRole, controller.getUsers);
+    router.get('/:id', AuthMiddleware.validateRole, controller.getUserById);
     router.delete('/:id', AuthMiddleware.validateRole, controller.deleteUserById);
+    router.put('/:id', AuthMiddleware.validateRole, controller.updateUser);
 
     return router;
   }

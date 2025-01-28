@@ -10,3 +10,4 @@ export const envs = {
   JWT_SEED: get('JWT_SEED').required().asString()
 
 }
+
