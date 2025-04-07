@@ -1,11 +1,12 @@
-services:
+version: "3.8"
 
+services:
   mongo-db:
     image: mongo:6.0.6
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mongo_user
-      MONGO_INITDB_ROOT_PASSWORD: 123456
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
     volumes:
       - ./mongo:/data/db
     ports:
@@ -14,16 +15,16 @@ services:
   node-app:
     build: .
     ports:
-      - "3000:3000"
+      - "${PORT}:${PORT}"
     depends_on:
       - mongo-db
     environment:
-      - PORT=3000
-      - MONGO_USER=mongo_user
-      - MONGO_PASS=123456
-      - MONGO_URL=mongodb://mongo_user:123456@mongo-db:27017/admin
-      - MONGO_DB_NAME=mystore
-      - JWT_SEED=12345
+      - PORT=${PORT}
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASS=${MONGO_PASS}
+      - MONGO_URL=${MONGO_URL}
+      - MONGO_DB_NAME=${MONGO_DB_NAME}
+      - JWT_SEED=${JWT_SEED}
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules

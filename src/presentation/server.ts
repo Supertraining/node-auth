@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import { ErrorHandler } from './middlewares/errorHandler.middleware';
-
+import { setupSwagger } from '../config/swagger'; // importá tu archivo de swagger
 
 interface Options {
   port?: number;
@@ -20,17 +20,21 @@ export class Server {
   }
 
   async start() {
-    //middlewares
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
 
-    //usar las rutas definidas
+    // Swagger docs
+    setupSwagger(this.app);
+
+    // API Routes
     this.app.use(this.routes);
 
-    this.app.use(ErrorHandler.errorHandler)
+    // Error handler
+    this.app.use(ErrorHandler.errorHandler);
 
     this.app.listen(this.port, '0.0.0.0', () => {
       console.log(`Server running at port ${this.port}`);
+      console.log(`Swagger docs available at http://localhost:${this.port}/api-docs`);
     });
   }
 }
